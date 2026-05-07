@@ -1,0 +1,10 @@
+{
+  "name": "weiqi-app",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node server.mjs",
+    "generate:assets": "node scripts/generate-ai-assets.mjs"
+  }
+}

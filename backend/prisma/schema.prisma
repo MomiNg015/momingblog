@@ -1,0 +1,84 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum MiniAppStatus {
+  ACTIVE
+  HIDDEN
+}
+
+model User {
+  id           String    @id @default(cuid())
+  username     String    @unique
+  nickname     String
+  passwordHash String
+  role         Role      @default(USER)
+  createdAt    DateTime  @default(now())
+  posts        Post[]
+  media        Media[]
+  comments     Comment[]
+}
+
+model Post {
+  id           String     @id @default(cuid())
+  title        String
+  slug         String     @unique
+  summary      String
+  content      String
+  status       PostStatus @default(DRAFT)
+  coverImageId String?
+  coverImage   Media?     @relation(fields: [coverImageId], references: [id])
+  authorId     String
+  author       User       @relation(fields: [authorId], references: [id])
+  comments     Comment[]
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+model Media {
+  id         String   @id @default(cuid())
+  filename   String
+  mimeType   String
+  size       Int
+  url        String
+  uploaderId String
+  uploader   User     @relation(fields: [uploaderId], references: [id])
+  posts      Post[]
+  createdAt  DateTime @default(now())
+}
+
+model Comment {
+  id        String    @id @default(cuid())
+  postId    String
+  post      Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
+  content   String
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
+}
+
+model MiniApp {
+  id          String        @id @default(cuid())
+  name        String
+  slug        String        @unique
+  description String
+  entryUrl    String
+  status      MiniAppStatus @default(ACTIVE)
+  createdAt   DateTime      @default(now())
+}

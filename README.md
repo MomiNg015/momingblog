@@ -69,6 +69,13 @@ docker compose up -d --build
 http://服务器IP/
 ```
 
+如果 Docker 构建阶段 `npm install` 网络中断，当前 Dockerfile 默认使用 `https://registry.npmmirror.com` 并开启 npm 重试。也可以手动覆盖：
+
+```powershell
+docker compose build --build-arg NPM_REGISTRY=https://registry.npmmirror.com
+docker compose up -d
+```
+
 路由约定：
 
 - 主站：`/`
